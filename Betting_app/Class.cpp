@@ -53,3 +53,48 @@ void Player::save_player_to_file()
 
 
 }
+
+
+
+
+
+
+
+
+
+void League::create_schedule()
+{
+	int how_many = teams_vec.size();
+	int how_many_2 = how_many;
+	int team_one = -1;
+	int team_two = how_many-1 ;
+	int match_counter = 0;
+
+	for (int i = 0; i< how_many - 1; i++)
+	{
+		team_one++;
+		for (int j = 0; j < how_many_2 - 1; j++)
+		{
+			//cout << teams_vec[team_one] << " vs " << teams_vec[team_two] << endl;
+			matches_vector[match_counter].m_team_one = teams_vec[team_one];
+			matches_vector[match_counter].m_team_two = teams_vec[team_two];
+			match_counter++;
+			team_two--;
+		}
+		how_many_2--;
+		team_two = how_many-1;
+	}
+
+
+
+}
+
+League::League(int league_type, vector<string> teams_vec)
+{
+	this->league_type = league_type;
+	this->teams_vec = teams_vec;
+	create_schedule();
+
+
+
+}
