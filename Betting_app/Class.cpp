@@ -15,9 +15,6 @@ string Player::convert_for_save()
 	for_save.append(" ");
 	for_save += to_string(score);
 
-
-
-
 	return for_save;
 }
 
@@ -48,10 +45,6 @@ void Player::save_player_to_file()
 	save << convert_for_save();
 	save << endl;
 	save.close();
-
-
-
-
 }
 
 
@@ -75,18 +68,23 @@ void League::create_schedule()
 		team_one++;
 		for (int j = 0; j < how_many_2 - 1; j++)
 		{
-			//cout << teams_vec[team_one] << " vs " << teams_vec[team_two] << endl;
-			matches_vector[match_counter].m_team_one = teams_vec[team_one];
-			matches_vector[match_counter].m_team_two = teams_vec[team_two];
-			match_counter++;
+			matches asd;
+			asd.m_team_one = teams_vec[team_one];
+			asd.m_team_two = teams_vec[team_two];
+			matches_vector.push_back(asd);
 			team_two--;
 		}
 		how_many_2--;
 		team_two = how_many-1;
 	}
-
-
-
+	int size = matches_vector.size();
+	for (int i = 0; i < size; i++)
+	{
+		matches asd;
+		asd.m_team_one = matches_vector[i].m_team_two;
+		asd.m_team_two = matches_vector[i].m_team_one;
+		matches_vector.push_back(asd);
+	}
 }
 
 League::League(int league_type, vector<string> teams_vec)
@@ -94,6 +92,60 @@ League::League(int league_type, vector<string> teams_vec)
 	this->league_type = league_type;
 	this->teams_vec = teams_vec;
 	create_schedule();
+}
+
+string League::get_team_one(int nr)
+{
+	return matches_vector[nr].m_team_one;
+}
+string League::get_team_two(int nr)
+{
+	return matches_vector[nr].m_team_two;
+}
+
+int League::get_matches_number()
+{
+	return matches_vector.size();
+}
+
+int League::get_league_type()
+{
+	return league_type;
+}
+
+void League::save_schedule_to_file(int nr, int type)
+{
+	string name;
+
+	if (type == 0)
+	{
+		name = "data\\leagues\\league_";
+		name += to_string(nr);
+		name.append(".lig");
+	}
+	else if (type == 1)
+	{
+		name = "data\\leagues\\league_n_bracket_";
+		name += to_string(nr);
+		name.append(".lig");
+	}
+	else if (type == 2)
+	{
+		name = "data\\leagues\\bracket_";
+		name += to_string(nr);
+		name.append(".lig");
+	}
+	fstream save(name, ios::out | ios::app);
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -63,13 +63,18 @@ int main()
 					cout << endl;
 				}
 				league_vector.push_back(League(league_type, teams_vec));
-
-				for (int i = 0; i < 6; i++)
+				int league_number = league_vector.size();
+				int league_type = league_vector[league_number - 1].get_league_type();
+				league_vector[league_number-1].save_schedule_to_file(league_number, league_type);
+				int matches_number = league_vector[0].get_matches_number();
+				for (int i = 0; i <matches_number; i++)
 				{
-					//cout << league_vector[0].matches_vector[i].m_team_one << " vs " << league_vector[0].matches_vector[i].m_team_two << endl;
-				}
-				
 
+					cout <<i+1<<". " << league_vector[0].get_team_one(i) << " vs " << league_vector[0].get_team_two(i) << endl;
+					
+				}
+				cin.get();
+				cin.get();
 			}
 
 

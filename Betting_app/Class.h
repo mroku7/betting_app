@@ -25,9 +25,18 @@ public:
 	Player(string, int);
 	string get_name();
 	int get_score();
-	void set_bets();
 	void save_player_to_file();
 };
+
+
+
+
+
+
+
+
+
+
 
 class League
 {
@@ -47,7 +56,11 @@ private:
 	void create_schedule();
 public:
 	League(int, vector<string>);
-	
+	string get_team_one(int);
+	string get_team_two(int);
+	int get_matches_number();
+	void save_schedule_to_file(int, int);
+	int get_league_type();
 
 
 };
