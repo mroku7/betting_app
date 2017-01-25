@@ -16,6 +16,7 @@ using namespace std;
 int main_menu();
 bool add_player(vector<Player>&);
 void loading_players_from_file(vector<Player>&, int&);
+void loading_schedule_from_file(vector <League>&, int&);
 string delete_underscore(string&);
 int league_selection_menu();
 
@@ -23,6 +24,7 @@ int league_selection_menu();
 int main()
 {
 	int player_counter = 0;
+	int league_counter = 0;
 	vector<Player> player_vector;
 	vector<League> league_vector;
 	loading_players_from_file(player_vector, player_counter);
@@ -40,15 +42,20 @@ int main()
 			int league_type =league_selection_menu();
 			if (league_type == 0)
 			{
-				
+				string name;
+				cout << "Jak chcesz nazwac ta nowa lige?" << endl;
+				while (_kbhit())_getch();
+				getline(cin, name);
+
+				//reading teams
 				int team_num = 0;
 				string team;
 				cout << "Podaj ilosc druzyn: ";
 				while (_kbhit())_getch();
 				while (!(cin >> team_num) || team_num % 2 != 0)
 				{
-					cin.ignore();
 					cin.clear();
+					cin.ignore();
 					cout << "Podaj poprawna wartosc. Pamietaj, ze liczba druzyn moze byc tylko parzysta." << endl;
 					cout << "Podaj ilosc druzyn: ";
 				}
@@ -62,19 +69,10 @@ int main()
 					teams_vec.push_back(team);
 					cout << endl;
 				}
-				league_vector.push_back(League(league_type, teams_vec));
-				int league_number = league_vector.size();
-				int league_type = league_vector[league_number - 1].get_league_type();
-				league_vector[league_number-1].save_schedule_to_file(league_number, league_type);
-				int matches_number = league_vector[0].get_matches_number();
-				for (int i = 0; i <matches_number; i++)
-				{
-
-					cout <<i+1<<". " << league_vector[0].get_team_one(i) << " vs " << league_vector[0].get_team_two(i) << endl;
-					
-				}
-				cin.get();
-				cin.get();
+				//new league in vector
+				league_vector.push_back(League(league_type, teams_vec, name));
+				league_counter++;
+				league_vector[league_counter-1].save_schedule_to_file();
 			}
 
 
@@ -102,57 +100,37 @@ int main()
 
 int main_menu()
 {
+	//you can easily add new option to menu just increase variable size and declare new menu string e.g. menu[4]= "new menu option"
+	const int size = 4;
+	string menu[size];
+	menu[0] = "\t\t\t\t\t\tWybierz lige";
+	menu[1] = "\t\t\t\t\t\tDodaj lige";
+	menu[2] = "\t\t\t\t\t\tDodaj gracza";
+	menu[3] = "\t\t\t\t\t\tWyjscie";
+
 	HANDLE standart = GetStdHandle(STD_OUTPUT_HANDLE);
 	short b = 0;
 	for (;;)
 	{
-		if (b == 0)
+		system("CLS");
+		for (int i = 0; i < size; i++)
 		{
-			system("CLS");
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\tWybierz lige" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\tDodaj lige" << endl;
-			cout << "\t\t\t\t\t\tDodaj gracza" << endl;
-			cout << "\t\t\t\t\t\tWyjscie" << endl;
+			if (i == b)
+			{
+				SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				cout << menu[i] << endl;
+				SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
+				continue;
+			}
+			cout << menu[i] << endl;
 		}
-		if (b == 1)
-		{
-			system("CLS");
-			system("Color 0F");
-			cout << "\t\t\t\t\t\tWybierz lige" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\tDodaj lige" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\tDodaj gracza" << endl;
-			cout << "\t\t\t\t\t\tWyjscie" << endl;
-		}
-		if (b == 2)
-		{
-			system("CLS");
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\tWybierz lige" << endl;
-			cout << "\t\t\t\t\t\tDodaj lige" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\tDodaj gracza" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\tWyjscie" << endl;
-		}
-		if (b == 3)
-		{
-			system("CLS");
-			cout << "\t\t\t\t\t\tWybierz lige" << endl;
-			cout << "\t\t\t\t\t\tDodaj lige" << endl;
-			cout << "\t\t\t\t\t\tDodaj gracza" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\tWyjscie" << endl;
-		}
+
 		for (;;)
 		{
 			if (GetAsyncKeyState(VK_DOWN) & 1)
 			{	
 				b += 1;
-				if (b == 4)
+				if (b == size)
 				{
 					b = 0;
 					break;
@@ -164,7 +142,7 @@ int main_menu()
 				b -= 1;
 				if (b == -1)
 				{
-					b = 3;
+					b = (size-1);
 					break;
 				}
 				break;
@@ -180,56 +158,29 @@ int main_menu()
 
 int league_selection_menu()
 {
+	const int size = 4;
+	string menu[size];
+	menu[0] = "\t\t\t\t\t\t*Liga";
+	menu[1] = "\t\t\t\t\t\t*Liga + puchar";
+	menu[2] = "\t\t\t\t\t\t*Puchar";
+	menu[3] = "\t\t\t\t\t\t Wstecz";
+
 	HANDLE standart = GetStdHandle(STD_OUTPUT_HANDLE);
 	short b = 0;
 	for (;;)
 	{
-		if (b == 0)
+		system("CLS");
+		cout << "\t\t\t\t\t\Wybierz rodzaj rozgrywek: " << endl;
+		for (int i = 0; i < size; i++)
 		{
-			system("CLS");
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\Wybierz rodzaj rozgrywek: " << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\t*Liga" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\t*Liga + puchar" << endl;
-			cout << "\t\t\t\t\t\t*Puchar" << endl;
-			cout << "\t\t\t\t\t\t Wstecz" << endl;
-		}
-		if (b == 1)
-		{
-			system("CLS");
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\Wybierz rodzaj rozgrywek: " << endl;
-			cout << "\t\t\t\t\t\t*Liga" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\t*Liga + puchar" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\t*Puchar" << endl;
-			cout << "\t\t\t\t\t\t Wstecz" << endl;
-		}
-		if (b == 2)
-		{
-			system("CLS");
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\Wybierz rodzaj rozgrywek: " << endl;
-			cout << "\t\t\t\t\t\t*Liga" << endl;
-			cout << "\t\t\t\t\t\t*Liga + puchar" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\t*Puchar" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\t Wstecz" << endl;
-		}
-		if (b == 3)
-		{
-			system("CLS");
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\Wybierz rodzaj rozgrywek: " << endl;
-			cout << "\t\t\t\t\t\t*Liga" << endl;
-			cout << "\t\t\t\t\t\t*Liga + puchar" << endl;
-			cout << "\t\t\t\t\t\t*Puchar" << endl;
-			SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			cout << "\t\t\t\t\t\t Wstecz" << endl;
+			if (i == b)
+			{
+				SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				cout << menu[i] << endl;
+				SetConsoleTextAttribute(standart, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
+				continue;
+			}
+			cout << menu[i] << endl;
 		}
 
 		for (;;)
@@ -237,7 +188,7 @@ int league_selection_menu()
 			if (GetAsyncKeyState(VK_DOWN) & 1)
 			{
 				b += 1;
-				if (b == 4)
+				if (b == size)
 				{
 					b = 0;
 					break;
@@ -249,7 +200,7 @@ int league_selection_menu()
 				b -= 1;
 				if (b == -1)
 				{
-					b = 3;
+					b = (size-1);
 					break;
 				}
 				break;
@@ -305,23 +256,31 @@ void loading_players_from_file(vector<Player> &player_vector, int &player_counte
 	string name;
 	int score;
 	fstream count("data\\players.dab", ios::in);
-	while (!count.eof())
+	if (count.is_open())
 	{
-		getline(count, test);
-		player_counter++;
+		while (!count.eof())
+		{
+			getline(count, test);
+			player_counter++;
+		}
+		player_counter--;
+		count.close();
+		fstream open("data\\players.dab", ios::in);
+		for (int i = 0; i < player_counter; i++)
+		{
+			open >> name;
+			delete_underscore(name);
+			open >> score;
+			player_vector.push_back(Player(name, score));
+		}
+		open.close();
 	}
-	player_counter--;
-	count.close();
-	fstream open("data\\players.dab", ios::in);
-	for (int i = 0; i < player_counter; i++)
-	{
-		open >> name;
-		delete_underscore(name);
-		open >> score;
-		player_vector.push_back(Player(name, score));
-	}
-	open.close();
 
+
+}
+
+void loading_schedule_from_file(vector <League>& league_vector, int& league_counter)
+{
 
 
 }

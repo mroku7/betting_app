@@ -1,16 +1,11 @@
 ﻿  Betting_app.cpp
-Betting_app.cpp(191): warning C4129: 'W': unrecognized character escape sequence
-Betting_app.cpp(203): warning C4129: 'W': unrecognized character escape sequence
-Betting_app.cpp(215): warning C4129: 'W': unrecognized character escape sequence
-Betting_app.cpp(227): warning C4129: 'W': unrecognized character escape sequence
-Betting_app.cpp(279): warning C4018: '<': signed/unsigned mismatch
-Betting_app.cpp(331): warning C4018: '<=': signed/unsigned mismatch
-  Class.cpp
-Class.cpp(10): warning C4018: '<=': signed/unsigned mismatch
+Betting_app.cpp(187): warning C4129: 'W': unrecognized character escape sequence
+Betting_app.cpp(244): warning C4018: '<': signed/unsigned mismatch
+Betting_app.cpp(298): warning C4018: '<=': signed/unsigned mismatch
   Generating code
-  14 of 567 functions ( 2.5%) were compiled, the rest were copied from previous compilation.
-    5 functions were new in current compilation
-    29 functions had inline decision re-evaluated but remain unchanged
+  1 of 567 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Betting_app.vcxproj -> F:\gicior\betting_app\Release\Betting_app.exe
   Betting_app.vcxproj -> F:\gicior\betting_app\Release\Betting_app.pdb (Full PDB)

@@ -4,20 +4,19 @@
 using namespace std;
 
 
+
+
 string Player::convert_for_save()
 {
-	string name_s = name;
-	for (int i = 0; i <= name_s.size(); i++)
-		if (name_s[i] == ' ')
-			name_s.replace(i, 1, "_");
-	string for_save;
-	for_save.append(name_s);
+	
+	string for_save = add_underscore(name);
 	for_save.append(" ");
 	for_save += to_string(score);
-
+	
 	return for_save;
 }
 
+Player::Player() {}
 Player::Player(string name)
 {
 	this->name = name;
@@ -47,6 +46,13 @@ void Player::save_player_to_file()
 	save.close();
 }
 
+string Player::add_underscore(string text)
+{
+	for (int i = 0; i <= text.size(); i++)
+		if (text[i] == ' ')
+			text.replace(i, 1, "_");
+	return text;
+}
 
 
 
@@ -87,10 +93,11 @@ void League::create_schedule()
 	}
 }
 
-League::League(int league_type, vector<string> teams_vec)
+League::League(int league_type, vector<string> teams_vec, string custom_league_name)
 {
 	this->league_type = league_type;
 	this->teams_vec = teams_vec;
+	this->custom_league_name = custom_league_name;
 	create_schedule();
 }
 
@@ -113,40 +120,42 @@ int League::get_league_type()
 	return league_type;
 }
 
-void League::save_schedule_to_file(int nr, int type)
+void League::save_schedule_to_file()
 {
-	string name;
+	string file_name;
+	string name = Player::add_underscore(custom_league_name);
 
-	if (type == 0)
+
+	if (league_type == 0)
 	{
-		name = "data\\leagues\\league_";
-		name += to_string(nr);
-		name.append(".lig");
+		file_name = "data\\leagues\\league_";
+		file_name.append(name);
+		file_name.append(".lig");
 	}
-	else if (type == 1)
+	else if (league_type == 1)
 	{
-		name = "data\\leagues\\league_n_bracket_";
-		name += to_string(nr);
-		name.append(".lig");
+		file_name = "data\\leagues\\league_n_bracket_";
+		file_name.append(name);
+		file_name.append(".lig");
 	}
-	else if (type == 2)
+	else if (league_type == 2)
 	{
-		name = "data\\leagues\\bracket_";
-		name += to_string(nr);
-		name.append(".lig");
+		file_name = "data\\leagues\\bracket_";
+		file_name.append(name);
+		file_name.append(".lig");
 	}
-	fstream save(name, ios::out | ios::app);
-
-
-
-
-
-
-
-
-
-
-
-
-
+	fstream save(file_name, ios::out | ios::app);
+	string under_name;
+	for (int i = 0; i < matches_vector.size(); i++)
+	{
+		under_name = add_underscore(matches_vector[i].m_team_one);
+		save << under_name;
+		save << " ";
+		under_name = add_underscore(matches_vector[i].m_team_two);
+		save << under_name;
+		save << endl;
+	}
+	
+	save.close();
 }
+

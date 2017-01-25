@@ -12,7 +12,6 @@ class Player
 private:
 	string name;
 	int score;
-	string convert_for_save();
 	struct bets
 	{
 		string b_team_one;
@@ -21,6 +20,9 @@ private:
 		unsigned int b_score_two;
 	};
 public:
+	string add_underscore(string);
+	string convert_for_save();
+	Player();
 	Player(string);
 	Player(string, int);
 	string get_name();
@@ -38,9 +40,10 @@ public:
 
 
 
-class League
+class League:Player
 {
 private:
+	string custom_league_name;
 	int league_type;
 	vector <string> teams_vec;
 	int teams_number;
@@ -55,11 +58,11 @@ private:
 	vector <matches> matches_vector;
 	void create_schedule();
 public:
-	League(int, vector<string>);
+	League(int, vector<string>, string);
 	string get_team_one(int);
 	string get_team_two(int);
 	int get_matches_number();
-	void save_schedule_to_file(int, int);
+	void save_schedule_to_file();
 	int get_league_type();
 
 
